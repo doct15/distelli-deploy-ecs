@@ -1,5 +1,11 @@
 version: '2'
 services:
+  mysql:
+    image: mysql
+    cpu_shares: 100
+    mem_limit: 124288000
+    environment:
+      MYSQL_ROOT_PASSWORD: password
   wordpress:
     image: wordpress
     cpu_shares: 100
@@ -9,13 +15,7 @@ services:
       #WORDPRESS_DB_USER:
       #WORDPRESS_DB_NAME:
     ports:
-      - "80:80"
+      - "8080:80"
     links:
       - mysql
-  mysql:
-    image: mysql
-    cpu_shares: 100
-    mem_limit: 124288000
-    environment:
-      MYSQL_ROOT_PASSWORD: password
       
