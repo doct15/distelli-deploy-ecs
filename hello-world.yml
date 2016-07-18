@@ -4,6 +4,10 @@ services:
     image: wordpress
     cpu_shares: 100
     mem_limit: 124288000
+    environment:
+      WORDPRESS_DB_PASSWORD: password
+      #WORDPRESS_DB_USER:
+      #WORDPRESS_DB_NAME:
     ports:
       - "80:80"
     links:
@@ -14,3 +18,4 @@ services:
     mem_limit: 124288000
     environment:
       MYSQL_ROOT_PASSWORD: password
+      
