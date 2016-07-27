@@ -1,17 +1,32 @@
 bmcgehee/distelli-deploy-ecs:
+
   PreBuild:
     - echo "---PreBuild---"
     - sudo curl -o /usr/local/bin/ecs-cli https://s3.amazonaws.com/amazon-ecs-cli/ecs-cli-linux-amd64-latest
     - sudo chmod +x /usr/local/bin/ecs-cli
     - ecs-cli --version
     - ecs-cli configure --region $AWS_REGION --access-key $AWS_ACCESS_KEY_ID --secret-key $AWS_SECRET_ACCESS_KEY --cluster bm-test
+
   Build:
     - echo "---Build---"
+
+    - echo "--Getting latest npm--"
+    - source ~/.nvm/nvm.sh
+    # Install node v4.4.7
+    - nvm install v4.4.7
+    # install latest npm version globlaly
+
+    - echo "--Building npm--"
+    - npm install npm -g
+
+    - echo "--Building Docker Image--"   
     - docker login -u "$DISTELLI_DOCKER_USERNAME" -p "$DISTELLI_DOCKER_PW" -e "$DISTELLI_DOCKER_EMAIL" $DISTELLI_DOCKER_ENDPOINT
     - docker build --quiet=false -t "$DISTELLI_DOCKER_REPO" "$DISTELLI_DOCKER_PATH"
     - docker tag "$DISTELLI_DOCKER_REPO" "$DISTELLI_DOCKER_REPO:$DISTELLI_BUILDNUM"
     - docker push "$DISTELLI_DOCKER_REPO:$DISTELLI_BUILDNUM"
+
     - echo "--Deploying to the Cluster--"
     - ecs-cli compose --file run-bmcgehee.yml up
+
   AfterBuildSuccess:
     - ecs-cli ps
